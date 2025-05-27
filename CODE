@@ -1,0 +1,82 @@
+---
+title: "DIFFERENT BETWENN IN BUILD PLOT FUNCTION AND GGPLOT"
+author: "PRIYESH PANDEY"
+date: "2025-05-27"
+output: html_document
+---
+
+{r}
+# LOADING THE ESSENTIAL LIBRARIES
+library(tidyr)
+library(dplyr)
+
+# THE NORMAL PLOT USING PLOT FUNCTION
+
+## HERE IS THE CSV ON CHINA AND INDIA GDP GROWTH RATE FROM 1961 TO 2022
+df<-read.csv("D:/Acer/ww.csv")
+
+# looking for the structure of the dataframe
+str(df)
+head(df,5)
+
+
+# The plot 
+plot(df$Year, df$China, type = "l", col = "red", 
+    main = "China vs India", xlab = "Year", ylab = "gdp growth rate")
+lines(df$Year, df$India, type = "l", col = "blue")
+legend("bottomright", legend = c("China", "India"), col = c("red", "blue"), lty = 1)
+
+
+# the graph is simple and clean. The inbuild function in R is very simple plotting of the data
+
+
+
+# GGPlOT
+
+#loading the ggplot library
+library(ggplot2)
+
+# before plotting the graph , I will make it in bit more presesntable manner
+
+new_df <- pivot_longer(df,cols = c("China","India"),
+                    names_to = "country",values_to = "growth_rate")
+
+head(new_df,5)
+
+# by using the pivot_longer function  i have merged the two colums together a single colum with countrries 
+
+# the plot
+plot <- ggplot(data = new_df, aes(x = Year, y = growth_rate, colour = country))+
+geom_line() +
+labs(title = "CHINA VS INDIA 1961", x = "Years", y = "GDP Growth Rate")
+
+plot
+
+
+# library ggplot make the plot more stand out and also add more functionality the graph
+
+
+# for instance we can point in out graph
+
+plot_point <-  ggplot(data = new_df, aes(x = Year, y = growth_rate, colour = country))+
+geom_line() +
+geom_point()+  
+labs(title = "CHINA VS INDIA 1961", x = "Years", y = "GDP Growth Rate")
+
+plot_point
+
+
+# we can make this more plot more advanced and interactive using plotly library
+library(plotly)
+
+plot_interactive <-  ggplot(data = new_df, aes(x = Year, y = growth_rate, colour = country,group=country,text=paste("Year:",Year,"<br>Growth_rate",round(growth_rate,2))))+
+geom_line() +
+geom_point()+  
+labs(title = "CHINA VS INDIA 1961", x = "Years", y = "GDP Growth Rate")
+
+
+plot_interactive
+
+
+ggplotly(plot_interactive,tooltip = "text")
+
